@@ -1,0 +1,44 @@
+{% extends "store/staff/staff_dashboard.html" %}
+
+{% block title %}Manage Products - Staff{% endblock %}
+
+{% block staff_content %}
+<h2>Product List</h2>
+<a href="{% url 'store:product_create_staff' %}" class="btn btn-primary mb-3">Add New Product</a>
+
+{% if messages %}
+{% for message in messages %}
+<div class="alert alert-{{ message.tags }}">{{ message }}</div>
+{% endfor %}
+{% endif %}
+
+{% if products %}
+<table class="table table-striped table-hover">
+	<thead>
+		<tr>
+			<th>Name</th>
+			<th>Price</th>
+			<th>Stock</th>
+			<th>Actions</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for product in products %}
+		<tr>
+			<td>{{ product.name }}</td>
+			<td>${{ product.price|floatformat:2 }}</td>
+			<td>{{ product.stock }}</td>
+			<td>
+				<a href="{% url 'store:product_update_staff' product.pk %}"
+					class="btn btn-sm btn-info">Edit</a>
+				<a href="{% url 'store:product_delete_staff' product.pk %}"
+					class="btn btn-sm btn-danger">Delete</a>
+			</td>
+		</tr>
+		{% endfor %}
+	</tbody>
+</table>
+{% else %}
+<p>No products found.</p>
+{% endif %}
+{% endblock %}

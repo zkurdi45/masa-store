@@ -1,0 +1,23 @@
+{% extends "store/base.html" %}
+
+{% block title %}Welcome - Grocery Store{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 text-center">
+            {% if message %}
+            <h1>{{ message }}</h1>
+            {% else %}
+            <h1>Welcome to the Grocery Store!</h1>
+            <p class="lead">Your one-stop shop for all your grocery needs.</p>
+            {% endif %}
+
+            {% if not user.is_authenticated %}
+            <p>Please <a href="{% url 'store:login' %}">login</a> or <a href="{% url 'store:register' %}">register</a>
+                to continue.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

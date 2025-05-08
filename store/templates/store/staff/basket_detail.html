@@ -1,0 +1,55 @@
+{% extends "store/staff/staff_dashboard.html" %}
+
+{% block title %}Basket Details #{{ basket.id }} - Staff{% endblock %}
+
+{% block staff_content %}
+<h2>Basket #{{ basket.id }} Details</h2>
+
+{% if messages %}
+{% for message in messages %}
+<div class="alert alert-{{ message.tags }}">{{ message }}</div>
+{% endfor %}
+{% endif %}
+
+<p><strong>User:</strong> {{ basket.user.name }} ({{ basket.user.email }})</p>
+<p><strong>Status:</strong> <span class="badge bg-primary">{{ basket.get_status_display }}</span></p>
+<p><strong>Total Price:</strong> ${{ basket.total_price|floatformat:2 }}</p>
+<p><strong>Created:</strong> {{ basket.created_at|date:"Y-m-d H:i" }}</p>
+<p><strong>Last Updated:</strong> {{ basket.updated_at|date:"Y-m-d H:i" }}</p>
+
+<h4>Items in Basket:</h4>
+{% if basket.items.all %}
+<table class="table">
+	<thead>
+		<tr>
+			<th>Product</th>
+			<th>Quantity</th>
+			<th>Unit Price</th>
+			<th>Subtotal</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for item in basket.items.all %}
+		<tr>
+			<td>{{ item.product.name }}</td>
+			<td>{{ item.quantity }}</td>
+			<td>${{ item.product.price|floatformat:2 }}</td>
+			<td>${{ item.total_price|floatformat:2 }}</td>
+		</tr>
+		{% endfor %}
+	</tbody>
+</table>
+{% else %}
+<p>This basket is empty.</p>
+{% endif %}
+
+{% if basket.status == 'submitted' %}
+<div class="mt-3">
+	<a href="{% url 'store:basket_approve_staff' basket.pk %}" class="btn btn-success">Approve Basket</a>
+	<a href="{% url 'store:basket_deny_staff' basket.pk %}" class="btn btn-danger">Deny Basket</a>
+</div>
+{% endif %}
+
+<a href="{% url 'store:basket_list_staff' %}?status={{ basket.status }}" class="btn btn-secondary mt-3">Back to Basket
+	List ({{ basket.get_status_display }})</a>
+{% endblock %}

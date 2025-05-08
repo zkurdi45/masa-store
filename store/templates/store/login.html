@@ -1,0 +1,51 @@
+{% extends "store/base.html" %}
+
+{% block title %}Login - Grocery Store{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">Login</h2>
+            </div>
+            <div class="card-body">
+                {% if form.errors and not form.non_field_errors %}
+                    <div class="alert alert-danger" role="alert">
+                        Your email and password didn't match. Please try again.
+                    </div>
+                {% endif %}
+                {% if form.non_field_errors %}
+                    {% for error in form.non_field_errors %}
+                        <div class="alert alert-danger" role="alert">
+                            {{ error }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+                <form method="post" action="{% url 'store:login' %}"> {# Namespaced #}
+                    {% csrf_token %}
+                    {% for field in form %}
+                        <div class="mb-3">
+                            <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                            <input type="{{ field.field.widget.input_type }}" name="{{ field.name }}" id="{{ field.id_for_label }}" class="form-control {% if field.errors %}is-invalid{% endif %}" value="{{ field.value|default:'' }}">
+                            {% if field.help_text %}
+                                <small class="form-text text-muted">{{ field.help_text }}</small>
+                            {% endif %}
+                            {% for error in field.errors %}
+                                <div class="invalid-feedback d-block">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                    {% endfor %}
+                    <input type="hidden" name="next" value="{{ next }}">
+                    <button type="submit" class="btn btn-primary w-100">Login</button>
+                </form>
+            </div>
+            <div class="card-footer text-center">
+                <small>Don't have an account? <a href="{% url 'store:register' %}">Register here</a>.</small> {# Namespaced #}
+                <br>
+                {# The problematic line has been removed #}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

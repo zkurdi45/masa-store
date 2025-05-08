@@ -1,0 +1,57 @@
+{% extends "store/base.html" %}
+
+{% block title %}Basket History - Grocery Store{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>Your Basket History</h1>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    {% if baskets %}
+    <div class="accordion" id="basketHistoryAccordion">
+        {% for basket in baskets %}
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="heading{{ basket.id }}">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                        data-bs-target="#collapse{{ basket.id }}" aria-expanded="false"
+                        aria-controls="collapse{{ basket.id }}">
+                    Basket #{{ basket.id }} - Status: {{ basket.get_status_display }} - Total: ${{ basket.total_price|floatformat:2 }} ({{ basket.updated_at|date:"Y-m-d H:i" }})
+                </button>
+            </h2>
+            <div id="collapse{{ basket.id }}" class="accordion-collapse collapse" aria-labelledby="heading{{ basket.id }}" data-bs-parent="#basketHistoryAccordion">
+                <div class="accordion-body">
+                    <h5>Items:</h5>
+                    {% if basket.items.all %}
+                    <ul class="list-group">
+                        {% for item in basket.items.all %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            {{ item.product.name }} (x{{ item.quantity }})
+                            <span>${{ item.total_price|floatformat:2 }}</span>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    {% else %}
+                    <p>This basket was empty.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p>You have no past baskets to display.</p>
+    {% endif %}
+    <div class="mt-3">
+        <a href="{% url 'store:shop_home' %}" class="btn btn-secondary">Back to Shop</a>
+        <a href="{% url 'store:view_basket' %}" class="btn btn-info">View Active Basket</a>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,13 @@
+{% extends "store/staff/staff_dashboard.html" %}
+
+{% block title %}{{ page_title }} - Staff{% endblock %}
+
+{% block staff_content %}
+<h2>{{ page_title }}</h2>
+<form method="post" novalidate>
+	{% csrf_token %}
+	{{ form.as_p }}
+	<button type="submit" class="btn btn-success">Save Product</button>
+	<a href="{% url 'store:product_list_staff' %}" class="btn btn-secondary">Cancel</a>
+</form>
+{% endblock %}
